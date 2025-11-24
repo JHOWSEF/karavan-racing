@@ -2,15 +2,15 @@ import graphics as gf
 import random
 import time
 
+#Tela
 win = gf.GraphWin("Jogo de Carro", 900, 900)
 win.setBackground("green")
-img_background = gf.Image(gf.Point(0,600), "fundo_grama.gif")
-img_background.draw(win)
 
 #estrada
 road = gf.Rectangle(gf.Point(200, 0), gf.Point(700, 645))
 road.setFill("black")
 road.draw(win)
+
 #traçado da estrada
 line = gf.Line(gf.Point(460,0),gf.Point(460,100))
 line.setFill("yellow")
@@ -37,19 +37,20 @@ line8 = gf.Line(gf.Point(460,770),gf.Point(460,870))
 line8.setFill("yellow")
 line8.draw(win)
 
-player = gf.Rectangle(gf.Point(280, 500), gf.Point(320, 550))
-player.setFill("blue")
-player.draw(win)
+#Player
+karavan = gf.Rectangle(gf.Point(280, 500), gf.Point(320, 550))
+karavan.setFill("blue")
+karavan.draw(win)
+karavan_speed = 20  
 
-player_speed = 20  
-
+#carros inimigos
 cars = []
 car_speed = 5
 spawn_timer = 0  
 spawn_interval = 25  
 score = 0
 
-
+#score create
 score_text = gf.Text(gf.Point(367, 840), f"Points: {score}")
 score_text.setSize(18)
 ft = gf.Image(gf.Point(460,790), "ft.png")
@@ -61,14 +62,14 @@ while True:
     time.sleep(0.03)  
     key = win.checkKey()
     
-    if key.upper() == "A" and player.getP1().getX() > 205:
-        player.move(-player_speed, 0)
-    elif key.upper() == "D" and player.getP2().getX() < 695:
-        player.move(player_speed, 0)
-    elif key.upper() == "W" and player.getP1().getY() > 0:
-        player.move(0, -player_speed)
-    elif key.upper() == "S" and player.getP2().getY() < 630:
-        player.move(0, player_speed)
+    if key.upper() == "A" and karavan.getP1().getX() > 205:
+        karavan.move(-karavan_speed, 0)
+    elif key.upper() == "D" and karavan.getP2().getX() < 695:
+        karavan.move(karavan_speed, 0)
+    elif key.upper() == "W" and karavan.getP1().getY() > 0:
+        karavan.move(0, -karavan_speed)
+    elif key.upper() == "S" and karavan.getP2().getY() < 630:
+        karavan.move(0, karavan_speed)
     elif key == "Escape":
         win.close()
         print("fechou o game burrao")
@@ -94,6 +95,5 @@ while True:
         if car.getP1().getY() > 600:
             car.undraw()
             cars.remove(car)
-            print("sumiu")
             score += 1
             score_text.setText(score)
