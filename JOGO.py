@@ -4,96 +4,137 @@ import time
 
 #Tela
 win = gf.GraphWin("Jogo de Carro", 900, 900)
-win.setBackground("green")
+win.setBackground("grey")
 
-#estrada
-road = gf.Rectangle(gf.Point(200, 0), gf.Point(700, 645))
-road.setFill("black")
-road.draw(win)
+def karavanHasCrashed(traffic,karavanHitbox):
+        for trafficHitbox,trafficSprite in traffic:
+            if (karavanHitbox.getP1().getX() <= trafficHitbox.getP2().getX() and karavanHitbox.getP2().getX() >= trafficHitbox.getP1().getX()) and (karavanHitbox.getP1().getY() <= trafficHitbox.getP2().getY() and karavanHitbox.getP2().getY() >= trafficHitbox.getP1().getY()):
+                return True 
+            
+def genTraffic(traffic):
+        largSprite = 30
+        altSprite = 30
+        x1 = random.randint(220, 660 - largSprite )
+        y1 = (0 - altSprite)
+        x2 = x1 + largSprite
+        y2 = y1 + altSprite
+        trafficHitbox = gf.Rectangle(gf.Point(x1, y1), gf.Point(x2, y2))
+        trafficHitbox.setFill("red")
+        trafficHitbox.draw(win)
+        trafficSprite = gf.Image(gf.Point((x1 + x2) / 2, (y1 + y2) /2), 'enemy_car.png')
+        trafficSprite.draw(win)
+        traffic.append((trafficHitbox,trafficSprite))
 
-#traçado da estrada
-line = gf.Line(gf.Point(460,0),gf.Point(460,100))
-line.setFill("yellow")
-line.draw(win)
-line2 = gf.Line(gf.Point(460,110),gf.Point(460,210))
-line2.setFill("yellow")
-line2.draw(win)
-line3 = gf.Line(gf.Point(460,220),gf.Point(460,320))
-line3.setFill("yellow")
-line3.draw(win)
-line4 = gf.Line(gf.Point(460,330),gf.Point(460,430))
-line4.setFill("yellow")
-line4.draw(win)
-line5 = gf.Line(gf.Point(460,440),gf.Point(460,540))
-line5.setFill("yellow")
-line5.draw(win)
-line6 = gf.Line(gf.Point(460,550),gf.Point(460,650))
-line6.setFill("yellow")
-line6.draw(win)
-line7 = gf.Line(gf.Point(460,660),gf.Point(460,760))
-line7.setFill("yellow")
-line7.draw(win)
-line8 = gf.Line(gf.Point(460,770),gf.Point(460,870))
-line8.setFill("yellow")
-line8.draw(win)
+def resetTraffic(traffic,score):
+    for trafficHitbox,trafficSprite in traffic:
+        if trafficHitbox.getP1().getY() > 600: #Se atingir o limite vertical da tela
+            trafficHitbox.undraw()
+            trafficSprite.undraw()
+            traffic.remove((trafficHitbox,trafficSprite))
+            return True
 
-#Player
-karavan = gf.Rectangle(gf.Point(280, 500), gf.Point(320, 550))
-karavan.setFill("blue")
-karavan.draw(win)
-karavan_speed = 20  
+def moveTraffic(traffic,car_speed):
+    #loop para mover os inimigos
+    for trafficHitbox,trafficSprite in traffic:
+        trafficHitbox.move(0, car_speed)
+        trafficSprite.move(0,car_speed)
 
-#carros inimigos
-cars = []
-car_speed = 5
-spawn_timer = 0  
-spawn_interval = 25  
-score = 0
+def updateScore(score,score_text):
+    score += 1
+    score_text.setText(score)
 
-#score create
-score_text = gf.Text(gf.Point(367, 840), f"Points: {score}")
-score_text.setSize(18)
-ft = gf.Image(gf.Point(460,790), "ft.png")
-ft.draw(win)
-score_text.draw(win)
+def genRoad(win):
+    #estrada
+    road = gf.Rectangle(gf.Point(200, 0), gf.Point(700, 645))
+    road.setFill("black")
+    road.draw(win)                   
+    lines = []
+    #traçado da estrada
+    y1 = 0
+    y2 = 100
+    for _ in range(8):
+        line = gf.Line(gf.Point(460,y1),gf.Point(460,y2))
+        line.setWidth(10)
+        line.setFill("yellow")
+        lines.append(line)
+        line.draw(win)
+        y1 += 110
+        y2 += 110
 
 
-while True:
-    time.sleep(0.03)  
-    key = win.checkKey()
+def main():
+    #GameOver
+    GameOver = False
+
+    #Player Sprites
+    karavanSprite = gf.Image(gf.Point(450,550),'playerCar60x60.png')
+
+    #Player Hitboxes
+    karavanHitbox = gf.Rectangle(gf.Point(440, 530), gf.Point(460, 570))
+    karavanHitbox.setFill("blue")
+    karavan_speed = 20  
+
+    karavanHitbox.draw(win)
+    karavanSprite.draw(win)
+
+    #carros inimigos
+    traffic = []
+    car_speed = 5
+    spawn_timer = 0  
+    spawn_interval = 25  
+
+
+    #score create
+    score = 0
+    score_text = gf.Text(gf.Point(367, 840), f"Points: {score}")
+    score_text.setSize(18)
+    ft = gf.Image(gf.Point(460,790), "ft.png")
+    ft.draw(win)
+    score_text.draw(win)
+
+
+    while not GameOver:
+        time.sleep(0.03)  
+        key = win.checkKey()
+
+        if key.upper() == "A" and karavanHitbox.getP1().getX() > 205:
+            karavanHitbox.move(-karavan_speed, 0)
+            karavanSprite.move(-karavan_speed, 0)
+        elif key.upper() == "D" and karavanHitbox.getP2().getX() < 695:
+            karavanHitbox.move(karavan_speed, 0)
+            karavanSprite.move(karavan_speed, 0)
+        elif key.upper() == "W" and karavanHitbox.getP1().getY() > 0:
+            karavanHitbox.move(0, -karavan_speed)
+            karavanSprite.move(0, -karavan_speed)
+        elif key.upper() == "S" and karavanHitbox.getP2().getY() < 630:
+            karavanHitbox.move(0, karavan_speed)
+            karavanSprite.move(0, karavan_speed)
+        elif key == "Escape":
+            GameOver = True
+            win.close()
+
+        spawn_timer += 1
+        if spawn_timer >= spawn_interval:
+            spawn_timer = 0
+            genTraffic(traffic)
+
+        #Move o tráfego
+        moveTraffic(traffic,car_speed)   
+
+        if resetTraffic(traffic,car_speed):
+            score +=1
+            updateScore(score,score_text)
+
+        #Colisão com os carros da rodovia
+        if karavanHasCrashed(traffic,karavanHitbox):
+            print('Karavan Crashed')
+            win.getMouse()
+            GameOver = True
+
+genRoad(win)
+main()
+
+
+
     
-    if key.upper() == "A" and karavan.getP1().getX() > 205:
-        karavan.move(-karavan_speed, 0)
-    elif key.upper() == "D" and karavan.getP2().getX() < 695:
-        karavan.move(karavan_speed, 0)
-    elif key.upper() == "W" and karavan.getP1().getY() > 0:
-        karavan.move(0, -karavan_speed)
-    elif key.upper() == "S" and karavan.getP2().getY() < 630:
-        karavan.move(0, karavan_speed)
-    elif key == "Escape":
-        win.close()
-        print("fechou o game burrao")
-
     
-    spawn_timer += 1
-    if spawn_timer >= spawn_interval:
-        spawn_timer = 0
-
-        
-        x = random.randint(220, 660)
-        
-        car = gf.Rectangle(gf.Point(x, -40), gf.Point(x+40, 0))
-        car.setFill("red")
-        car.draw(win)
-        cars.append(car)
-
-#loop para mover os inimigos
-    for car in cars:
-        car.move(0, car_speed)
-        
-        
-        if car.getP1().getY() > 600:
-            car.undraw()
-            cars.remove(car)
-            score += 1
-            score_text.setText(score)
