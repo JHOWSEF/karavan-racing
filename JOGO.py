@@ -4,7 +4,7 @@ import time
 
 #Tela
 win = gf.GraphWin("Jogo de Carro", 900, 900)
-win.setBackground("grey")
+win.setBackground("green")
 
 def karavanHasCrashed(traffic,karavanHitbox):
         for trafficHitbox,trafficSprite in traffic:
@@ -67,21 +67,21 @@ def main():
     GameOver = False
 
     #Player Sprites
-    karavanSprite = gf.Image(gf.Point(450,550),'playerCar60x60.png')
+    karavanSprite = gf.Image(gf.Point(450,550),'karavan.png')
 
     #Player Hitboxes
     karavanHitbox = gf.Rectangle(gf.Point(440, 530), gf.Point(460, 570))
     karavanHitbox.setFill("blue")
-    karavan_speed = 20  
+    karavan_speed = 5.5
 
     karavanHitbox.draw(win)
     karavanSprite.draw(win)
 
     #carros inimigos
     traffic = []
-    car_speed = 5
+    car_speed = 4.25
     spawn_timer = 0  
-    spawn_interval = 25  
+    spawn_interval = 40  
 
 
     #score create
@@ -92,9 +92,12 @@ def main():
     ft.draw(win)
     score_text.draw(win)
 
+    last_frame = time.time()
+    fps = 60
+    frame_duration = 1 / fps
 
     while not GameOver:
-        time.sleep(0.03)  
+        time.sleep(0.001)  
         key = win.checkKey()
 
         if key.upper() == "A" and karavanHitbox.getP1().getX() > 205:
