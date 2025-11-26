@@ -49,8 +49,7 @@ def genRoad(win):
     road_color = gf.color_rgb(54,54,54)
     road = gf.Rectangle(gf.Point(200, 0), gf.Point(700, 900))
     road.setFill(road_color)
-    road.draw(win)                   
-
+    road.draw(win)
 
 def genlines(win):
     #traçado da estrada
@@ -82,6 +81,36 @@ def movelines(lines):
             dy = -600  # sobe tudo de volta
             line.move(0, dy)
 
+def create_rpm_bar(win):
+    fundo = gf.Rectangle(gf.Point(240, 710), gf.Point(615, 720))
+    fundo.setFill("darkgrey")
+    fundo.draw(win)
+
+    barra = gf.Rectangle(gf.Point(240, 710), gf.Point(240, 720))
+    barra.setFill("yellow")
+    barra.draw(win)
+
+    return barra
+
+
+def update_rpm_bar(win, barra, rpm_value):
+    start = 240
+    end_max = 615
+
+    x = start + (end_max - start) * rpm_value  # cálculo da posição final
+
+    # apaga barra antiga
+    barra.undraw()
+
+    # cria barra nova
+    nova_barra = gf.Rectangle(gf.Point(start, 710), gf.Point(x, 720))
+    nova_barra.setFill("yellow")
+    nova_barra.draw(win)
+
+    return nova_barra
+
+
+
 
 def main():
     #GameOver
@@ -108,11 +137,16 @@ def main():
     score = 0
     score_text = gf.Text(gf.Point(367, 840), f"Points: {score}")
     score_text.setSize(18)
-    ft = gf.Image(gf.Point(460,790), "ft.png")
+    ft = gf.Image(gf.Point(460,790), "ft700.png")
     ft.draw(win)
     score_text.draw(win)
     
-    
+    rpm_value = 0.0
+    rpm_speed_up = 0.04
+    rpm_speed_down = 0.02
+
+    barra_rpm = create_rpm_bar(win)
+
     
     while not GameOver:
         #time.sleep(0.001)
@@ -121,15 +155,27 @@ def main():
         if key.upper() == "A" and karavanHitbox.getP1().getX() > 205:
             karavanHitbox.move(-karavan_speed, 0)
             karavanSprite.move(-karavan_speed, 0)
+
         elif key.upper() == "D" and karavanHitbox.getP2().getX() < 695:
             karavanHitbox.move(karavan_speed, 0)
             karavanSprite.move(karavan_speed, 0)
+
         elif key.upper() == "W" and karavanHitbox.getP1().getY() > 0:
             karavanHitbox.move(0, -karavan_speed)
             karavanSprite.move(0, -karavan_speed)
+            rpm_value += rpm_speed_up
+            if rpm_value > 1:
+                rpm_value = 1
+            barra_rpm = update_rpm_bar(win, barra_rpm, rpm_value)
+
         elif key.upper() == "S" and karavanHitbox.getP2().getY() < 630:
             karavanHitbox.move(0, karavan_speed)
             karavanSprite.move(0, karavan_speed)
+            rpm_value -= rpm_speed_down
+            if rpm_value<0:
+                rpm_value=0
+            barra_rpm = update_rpm_bar(win, barra_rpm, rpm_value)
+
         elif key == "Escape":
             GameOver = True
             win.close()
