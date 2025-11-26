@@ -3,7 +3,7 @@ import random
 import time
 
 #Tela
-win = gf.GraphWin("Jogo de Carro", 900, 900, autoflush=False)
+win = gf.GraphWin("Jogo de Carro", 900, 900)
 win.setBackground("green")
 
 def karavanHasCrashed(traffic,karavanHitbox):
@@ -12,7 +12,7 @@ def karavanHasCrashed(traffic,karavanHitbox):
                 return True 
             
 def genTraffic(traffic):
-        trafficCarsImg = ['f1_enemy.png','whiteCar_enemy.png','yellowCar_enemy.png']
+        trafficCarsImg = ['f1_enemy.png','whiteCar_enemy.png','yellowCar_enemy.png','playerCar60x60.png','redCar_enemy.png']
         largSprite = 30
         altSprite = 30
         x1 = random.randint(220, 660 - largSprite )
@@ -21,9 +21,10 @@ def genTraffic(traffic):
         y2 = y1 + altSprite
         trafficHitbox = gf.Rectangle(gf.Point(x1, y1), gf.Point(x2, y2))
         #trafficHitbox.setFill("red") cor da hitbox do traffic
-        trafficHitbox.draw(win)
+        #trafficHitbox.draw(win)
         trafficSprite = gf.Image(gf.Point((x1 + x2) / 2, (y1 + y2) /2), random.choice(trafficCarsImg))
         trafficSprite.draw(win)
+       
         traffic.append((trafficHitbox,trafficSprite))
 
 def resetTraffic(traffic,score):
@@ -88,9 +89,9 @@ def main():
 
     #carros inimigos
     traffic = []
-    car_speed = 20
+    car_speed = 5
     spawn_timer = 0  
-    spawn_interval = 6 #Mais dificil => menor spawn_interval  
+    spawn_interval = 15 #Mais dificil => menor spawn_interval  
 
     
 
@@ -104,9 +105,12 @@ def main():
 
 
     while not GameOver:
-        time.sleep(0.03)  
-        key = win.checkKey()
+        time.sleep(1/120)
 
+        
+
+        key = win.checkKey()
+        
         if key.upper() == "A" and karavanHitbox.getP1().getX() > 205:
             karavanHitbox.move(-karavan_speed, 0)
             karavanSprite.move(-karavan_speed, 0)
