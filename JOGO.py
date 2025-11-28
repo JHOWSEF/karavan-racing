@@ -109,6 +109,21 @@ def update_rpm_bar(win, rpmBar, rpm_value):
 
     return newRpmBar
 
+def shakeKaravan(karavanHitBox,karavanSprite,shakeinterval,shakeright,shaketimer):
+
+    if shaketimer >= shakeinterval:
+        shaketimer = 0
+
+        if shakeright == True:
+            karavanHitBox.move(7, 0)
+            karavanSprite.move(7, 0)
+            shakeright = False
+        else:
+            karavanHitBox.move(-7, 0)
+            karavanSprite.move(-7, 0)
+            shakeright = True
+        
+    return shakeright, shaketimer
 
            
 def main():
@@ -146,13 +161,15 @@ def main():
     
     rpm_value = 0.0
     rpm_speed_up = 0.04
-    rpm_speed_down = 0.02
+    rpm_speed_down = 0.01
 
     rpmBar = create_rpm_bar(win)
 
     currentKaravanSprite = 0
-    karavanAccelerationShakeLeft = 1
 
+    shakeright = True
+    shaketimer = 0
+    shakeinterval = 20
     while not gameOver:
         #time.sleep(0.001)
         key = win.checkKey()
@@ -195,6 +212,10 @@ def main():
         elif key == "Escape":
             gameOver = True
             win.close()
+
+        #shake karavan
+        shaketimer += 1
+        shakeright,shaketimer = shakeKaravan(karavanHitBox,karavanSprite,shakeinterval,shakeright,shaketimer)
 
         spawn_timer += 1
         if spawn_timer >= spawn_interval:
