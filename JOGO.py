@@ -34,24 +34,46 @@ def resetTraffic(traffic,score):
             traffic.remove((trafficHitbox,trafficSprite))
             return True
 
-def moveTraffic(traffic,car_speed):
+def moveTraffic(traffic,trafficSpeed):
     #loop para mover os inimigos
     for trafficHitbox,trafficSprite in traffic:
-        trafficHitbox.move(0, car_speed)
-        trafficSprite.move(0,car_speed)
+        trafficHitbox.move(0, trafficSpeed)
+        trafficSprite.move(0,trafficSpeed)
 
-def updateScore(score,score_text):
+def updateScore(score,scoreText):
     score += 1
-    score_text.setText(score)
+    scoreText.setText(score)
 
-def genRoad(win):
+def genRoad(win,score):       
     #estrada
-    road_color = gf.color_rgb(54,54,54)
-    road = gf.Rectangle(gf.Point(200, 0), gf.Point(700, 900))
-    road.setFill(road_color)
+    dirtRoadColor = gf.color_rgb(82,57,47)
+    dirtRoad = gf.Rectangle(gf.Point(200, 0), gf.Point(700, 800))
+    dirtRoad.setFill(dirtRoadColor)
+    dirtRoad.draw(win)    
+    roadColor = gf.color_rgb(53,53,53)
+    road = gf.Rectangle(gf.Point(200, 0), gf.Point(700, 800))
+    road.setFill(roadColor)
     road.draw(win)
+    return road,dirtRoad
 
-def genlines(win):
+def changeRoad(road,dirtRoad,win):
+    if road.getP1().getY() < 900:
+        while road.getP1().getY() < 900:
+            road.move(0,2)
+            win.update()
+            print(road)
+        return road,dirtRoad
+    else:
+        while road.getP1().getY() > 0:
+            road.move(0,-2)
+            dirtRoad.move(0,2) #Vai até Y == 900
+            win.update()
+            print(road)
+ 
+        return road,dirtRoad
+
+
+def genLines(win):
     #traçado da estrada
     lines = []
     y1 = 0
@@ -73,7 +95,7 @@ def genlines(win):
         x2+=100
     return lines
 
-def movelines(lines):
+def moveLines(lines):
     speed = 6
     for line in lines:
         line.move(0, speed)
@@ -81,7 +103,7 @@ def movelines(lines):
             dy = -600  # sobe tudo de volta
             line.move(0, dy)
 
-def create_rpm_bar(win):
+def createRpmBar(win):
     rpmBarBackground = gf.Rectangle(gf.Point(240, 710), gf.Point(615, 720))
     rpmBarBackground.setFill("darkgrey")
     rpmBarBackground.draw(win)
@@ -93,87 +115,89 @@ def create_rpm_bar(win):
     return rpmBar
 
 
-def update_rpm_bar(win, rpmBar, rpm_value):
-    start = 240
-    end_max = 615
+def updateRpmBar(win, rpmBar, rpmValue):
+    start = 240 #Onde a barra de rpm começa
+    maxRpm = 615 #Ponto limite da barra de rpm
 
-    x = start + (end_max - start) * rpm_value  # cálculo da posição final
+    x = start + (maxRpm - start) * rpmValue  # Cálculo da posição final da barra de rpm 
 
-    # apaga barra antiga
+    # Apaga barra antiga
     rpmBar.undraw()
 
-    # cria barra nova
+    # Cria a barra nova
     newRpmBar = gf.Rectangle(gf.Point(start, 710), gf.Point(x, 720))
     newRpmBar.setFill("yellow")
     newRpmBar.draw(win)
 
     return newRpmBar
 
-def shakeKaravan(karavanHitBox,karavanSprite,shakeinterval,shakeright,shaketimer):
+def shakeKaravan(karavanHitBox,karavanSprite,shakeInterval,shakeRight,shakeTimer):
 
-    if shaketimer >= shakeinterval:
-        shaketimer = 0
+    if shakeTimer >= shakeInterval:
+        shakeTimer = 0
 
-        if shakeright == True:
+        if shakeRight == True:
             karavanHitBox.move(7, 0)
             karavanSprite.move(7, 0)
-            shakeright = False
+            shakeRight = False
         else:
             karavanHitBox.move(-7, 0)
             karavanSprite.move(-7, 0)
-            shakeright = True
+            shakeRight = True
         
-    return shakeright, shaketimer
+    return shakeRight, shakeTimer
+    
 
            
 def main():
     #gameOver
     gameOver = False
 
-    genlines(win)
-    lines = genlines(win)
+    road,dirtRoad = genRoad(win,0)
+    print(road)
+    genLines(win)
+    lines = genLines(win)
 
     #karavanHitBox.setFill("blue") #Cor da hitbox
-    #karavan config
 
-    
+    #Configurações default da Karavan
     karavanSpriteList = ['karavan-left.png','karavan-right.png','karavan-pop.png']  
     karavanSprite = gf.Image(gf.Point(450, 510), 'playerCar60x60.png')
     karavanHitBox = gf.Rectangle(gf.Point(440, 530), gf.Point(460, 570))
     karavanAcceleration = 20 #Mais dificil -> maior velocidade da karavan
     karavanDisacceleration = 4
     karavanHitBox.draw(win)
+    currentKaravanSprite = 0
 
-
-    #carros inimigos
+    #Configurações default do tráfego
     traffic = []
-    car_speed = 1
+    trafficSpeed = 1
     spawn_timer = 0  
     spawn_interval = 100 #Mais dificil => menor spawn_interval 
 
-    #score create
+    #Cria a antiga FT e o Score que vai aparecer na tela
     score = 0
-    score_text = gf.Text(gf.Point(367, 840), f"Points: {score}")
-    score_text.setSize(18)
+    scoreText = gf.Text(gf.Point(367, 840), f"Points: {score}")
+    scoreText.setSize(18)
     ft = gf.Image(gf.Point(460,790), "ft700.png")
     ft.draw(win)
-    score_text.draw(win)
+    scoreText.draw(win)
     
-    rpm_value = 0.0
+    rpmValue = 0.0
     rpm_speed_up = 0.04
     rpm_speed_down = 0.01
 
-    rpmBar = create_rpm_bar(win)
+    rpmBar = createRpmBar(win)
 
-    currentKaravanSprite = 0
+    shakeRight = True
+    shakeTimer = 0
+    shakeInterval = 20 #Intervalo entre as trepidações da karavan
 
-    shakeright = True
-    shaketimer = 0
-    shakeinterval = 20
+    
     while not gameOver:
         #time.sleep(0.001)
         key = win.checkKey()
-
+        
         karavanX1 = karavanHitBox.getP1().getX()
         karavanY1 = karavanHitBox.getP1().getY()
 
@@ -196,48 +220,55 @@ def main():
         elif key.upper() == "W" and karavanHitBox.getP1().getY() > 0:
             karavanHitBox.move(0, -karavanAcceleration)
             karavanSprite.move(0, -karavanAcceleration)
-            rpm_value += rpm_speed_up
-            if rpm_value > 1:
-                rpm_value = 1
-            rpmBar = update_rpm_bar(win, rpmBar, rpm_value)
+            rpmValue += rpm_speed_up
+            if rpmValue > 1:
+                rpmValue = 1
+            rpmBar = updateRpmBar(win, rpmBar, rpmValue)
 
         elif key.upper() == "S" and karavanHitBox.getP2().getY() < 630:
             karavanHitBox.move(0, karavanDisacceleration)
             karavanSprite.move(0, karavanDisacceleration)
-            rpm_value -= rpm_speed_down
-            if rpm_value<0:
-                rpm_value=0
-            rpmBar = update_rpm_bar(win, rpmBar, rpm_value)
+            rpmValue -= rpm_speed_down
+            if rpmValue<0:
+                rpmValue=0
+            rpmBar = updateRpmBar(win, rpmBar, rpmValue)
 
         elif key == "Escape":
             gameOver = True
             win.close()
 
-        #shake karavan
-        shaketimer += 1
-        shakeright,shaketimer = shakeKaravan(karavanHitBox,karavanSprite,shakeinterval,shakeright,shaketimer)
+        #Trepidação da Karavan
+        shakeTimer += 1
+        shakeRight,shakeTimer = shakeKaravan(karavanHitBox,karavanSprite,shakeInterval,shakeRight,shakeTimer)
 
         spawn_timer += 1
         if spawn_timer >= spawn_interval:
             spawn_timer = 0
             genTraffic(traffic)
 
-        #Move o tráfego
-        moveTraffic(traffic,car_speed) 
+        #Função para mover o tráfego
+        moveTraffic(traffic,trafficSpeed) 
 
-        #move as linhas  
-        movelines(lines)
+        #Função para mover as linhas da rodovia  
+        moveLines(lines)
 
-        if resetTraffic(traffic,car_speed):
-            score +=1
-            updateScore(score,score_text)
+        #Reseta o tráfego quando atingir o limite vertical da tela
+        if resetTraffic(traffic,trafficSpeed):
+            score +=1 
+            if score == 5:
+                changeRoad(road,dirtRoad,win)
+            elif score == 10:
+                changeRoad(road,dirtRoad,win)
 
-        #Colisão com os carros da rodovia
+                #changeRoad(road,win)
+            updateScore(score,scoreText)
+
+        #Verifica a colisão da Karavan com os carros da rodovia
         if karavanHasCrashed(traffic,karavanHitBox):
             print('Karavan Crashed')
             win.getMouse()
             gameOver = True
 
 
-genRoad(win)
+
 main()
