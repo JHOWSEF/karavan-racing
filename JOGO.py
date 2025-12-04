@@ -1,6 +1,5 @@
 import graphics as gf
 import random
-import time
 
 #Tela
 win = gf.GraphWin("Jogo de Carro", 900, 900, autoflush=False)
@@ -66,12 +65,12 @@ def changeRoad(road,dirtRoad,win):
     else:
         while road.getP1().getY() > 0:
             road.move(0,-2)
-            dirtRoad.move(0,2) #Vai até Y == 900
+            #dirtRoad.move(0,2) #Vai até Y == 900
             win.update()
             print(road)
  
         return road,dirtRoad
-
+    
 
 def genLines(win):
     #traçado da estrada
@@ -80,8 +79,8 @@ def genLines(win):
     y2 = 40
     x1 = 300
     x2 = 300
-    for _ in range(4):
-        for _ in range(20):
+    for i in range(4):
+        for i in range(20):
             line = gf.Line(gf.Point(x1,y1),gf.Point(x2,y2))
             line.setWidth(2)
             line.setFill("white")
@@ -147,12 +146,29 @@ def shakeKaravan(karavanHitBox,karavanSprite,shakeInterval,shakeRight,shakeTimer
         
     return shakeRight, shakeTimer
     
+def grassDraw(win):
+    count=100
+    for i in range(count):
+        x = random.randint(0, 900)
+        y = random.randint(0, 900)
+        size = random.randint(4, 10)
+
+        for i in range(10):
+            line = gf.Line(
+                gf.Point(x, y),
+                gf.Point(x + random.randint(-size, size), y - random.randint(3, size))
+            )
+            line.setWidth(1)
+            greens = ["#228b22", "#006400", "#32cd32", "#00aa44"]
+            line.setFill(random.choice(greens))
+            line.draw(win)
 
            
 def main():
     #gameOver
     gameOver = False
 
+    grassDraw(win)
     road,dirtRoad = genRoad(win,0)
     print(road)
     genLines(win)
@@ -171,7 +187,7 @@ def main():
 
     #Configurações default do tráfego
     traffic = []
-    trafficSpeed = 1
+    trafficSpeed = 2
     spawn_timer = 0  
     spawn_interval = 100 #Mais dificil => menor spawn_interval 
 
@@ -195,7 +211,7 @@ def main():
 
     
     while not gameOver:
-        #time.sleep(0.001)
+        
         key = win.checkKey()
         
         karavanX1 = karavanHitBox.getP1().getX()
@@ -255,9 +271,7 @@ def main():
         #Reseta o tráfego quando atingir o limite vertical da tela
         if resetTraffic(traffic,trafficSpeed):
             score +=1 
-            if score == 5:
-                changeRoad(road,dirtRoad,win)
-            elif score == 10:
+            if score % 50 == 0:
                 changeRoad(road,dirtRoad,win)
 
                 #changeRoad(road,win)
