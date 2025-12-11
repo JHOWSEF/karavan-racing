@@ -103,7 +103,7 @@ def moveLines(lines):
             line.move(0, dy)
 
 def createRpmBar(win):
-    rpmBarBackground = gf.Rectangle(gf.Point(240, 710), gf.Point(615, 720))
+    rpmBarBackground = gf.Rectangle(gf.Point(235, 685), gf.Point(615, 715))
     rpmBarBackground.setFill("darkgrey")
     rpmBarBackground.draw(win)
 
@@ -124,7 +124,7 @@ def updateRpmBar(win, rpmBar, rpmValue):
     rpmBar.undraw()
 
     # Cria a barra nova
-    newRpmBar = gf.Rectangle(gf.Point(start, 710), gf.Point(x, 720))
+    newRpmBar = gf.Rectangle(gf.Point(start, 685), gf.Point(x, 715))
     newRpmBar.setFill("yellow")
     newRpmBar.draw(win)
 
@@ -146,11 +146,12 @@ def shakeKaravan(karavanHitBox,karavanSprite,shakeInterval,shakeRight,shakeTimer
         
     return shakeRight, shakeTimer
     
-def grassDraw(win):
+def drawGrass(win):
     count=100
+    grassList = []
     for i in range(count):
         x = random.randint(0, 900)
-        y = random.randint(0, 900)
+        y = random.randint(0, 700)
         size = random.randint(4, 10)
 
         for i in range(10):
@@ -159,20 +160,69 @@ def grassDraw(win):
                 gf.Point(x + random.randint(-size, size), y - random.randint(3, size))
             )
             line.setWidth(1)
-            greens = ["#228b22", "#006400", "#32cd32", "#00aa44"]
+            greens = ["#228b22", "#006400", "#32cd32", "#00aa44"] 
             line.setFill(random.choice(greens))
+            grassList.append(line)
             line.draw(win)
+    return grassList
+
+
+#def moveGrass(grassList):
+    print(f'entrou na função de mover')
+    for grass in grassList:
+        grass.move(2,0)
+        if grass.getP1().getX() >= 200:
+            dx = 10
+            grass.move(dx,0)
+            print('Chegou no limitezão em ')
+    
+
+def addNewScore(newScore):
+    previousScores = []
+    output = ''
+    with open('leaderboard.csv', 'r') as file:
+        previousScores = [score for score in file.read().strip().split(';') if score]
+        print(previousScores)
+
+    
+        previousScores.append(str(newScore) + ';')
+        previousScores.sort(reverse=True, key=str)
+# Converter a lista de volta para uma string separada por ponto e vírgula
+        output = ';'.join(previousScores) + ';'
+    #    print(previousScores)
+#
+    #    for i in range(len(previousScores)):
+    #        for j in range(1,len(previousScores)):
+    #            if previousScores[j] > previousScores[i]:
+    #                previousScores[j],previousScores[i] = previousScores[i],previousScores[j]
+    with open('leaderboard.csv', 'w+') as file:
+    #    
+    #    for score in previousScores:
+    #        output += score + ';'
+    #    print(output)
+        file.write(output)
 
            
 def main():
     #gameOver
     gameOver = False
 
-    grassDraw(win)
+    grass = drawGrass(win)
+    print(grass)
     road,dirtRoad = genRoad(win,0)
     print(road)
     genLines(win)
     lines = genLines(win)
+    #Cria a antiga FT e o Score que vai aparecer na tela
+    score = 0
+    scoreText = gf.Text(gf.Point(262, 835), f"{score}")
+    scoreText.setTextColor('white')
+    scoreText.setSize(18)
+    ft = gf.Image(gf.Point(455,775), "ft700.png")
+    ft.draw(win)
+
+    scoreText.draw(win)
+
 
     #karavanHitBox.setFill("blue") #Cor da hitbox
 
@@ -191,13 +241,7 @@ def main():
     spawn_timer = 0  
     spawn_interval = 100 #Mais dificil => menor spawn_interval 
 
-    #Cria a antiga FT e o Score que vai aparecer na tela
-    score = 0
-    scoreText = gf.Text(gf.Point(367, 840), f"Points: {score}")
-    scoreText.setSize(18)
-    ft = gf.Image(gf.Point(460,790), "ft700.png")
-    ft.draw(win)
-    scoreText.draw(win)
+
     
     rpmValue = 0.0
     rpm_speed_up = 0.04
@@ -211,7 +255,9 @@ def main():
 
     
     while not gameOver:
+
         
+
         key = win.checkKey()
         
         karavanX1 = karavanHitBox.getP1().getX()
@@ -267,6 +313,8 @@ def main():
 
         #Função para mover as linhas da rodovia  
         moveLines(lines)
+        
+        #moveGrass(grass)
 
         #Reseta o tráfego quando atingir o limite vertical da tela
         if resetTraffic(traffic,trafficSpeed):
@@ -282,6 +330,7 @@ def main():
             print('Karavan Crashed')
             win.getMouse()
             gameOver = True
+            newScore = addNewScore(score)
 
 
 
