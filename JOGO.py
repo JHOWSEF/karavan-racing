@@ -40,7 +40,7 @@ def moveTraffic(traffic,trafficSpeed):
         trafficSprite.move(0,trafficSpeed)
 
 def updateScore(score,scoreText):
-    score += 1
+    
     scoreText.setText(score)
 
 def genRoad(win,score):       
@@ -62,6 +62,7 @@ def changeRoad(road,dirtRoad,win):
             win.update()
             print(road)
         return road,dirtRoad
+    #MOVE ESTRADA DE TERRA
     else:
         while road.getP1().getY() > 0:
             road.move(0,-2)
@@ -166,15 +167,6 @@ def drawGrass(win):
             line.draw(win)
     return grassList
 
-
-#def moveGrass(grassList):
-    print(f'entrou na função de mover')
-    for grass in grassList:
-        grass.move(2,0)
-        if grass.getP1().getX() >= 200:
-            dx = 10
-            grass.move(dx,0)
-            print('Chegou no limitezão em ')
     
 
 def addNewScore(newScore):
@@ -182,37 +174,51 @@ def addNewScore(newScore):
     output = ''
     with open('leaderboard.csv', 'r') as file:
         previousScores = [score for score in file.read().strip().split(';') if score]
-        print(previousScores)
-
-    
-        previousScores.append(str(newScore) + ';')
+        # print(previousScores)
+        previousScores.append(str(newScore))
         previousScores.sort(reverse=True, key=str)
-# Converter a lista de volta para uma string separada por ponto e vírgula
-        output = ';'.join(previousScores) + ';'
-    #    print(previousScores)
-#
-    #    for i in range(len(previousScores)):
-    #        for j in range(1,len(previousScores)):
-    #            if previousScores[j] > previousScores[i]:
-    #                previousScores[j],previousScores[i] = previousScores[i],previousScores[j]
+        output = ';'.join(previousScores)
     with open('leaderboard.csv', 'w+') as file:
-    #    
-    #    for score in previousScores:
-    #        output += score + ';'
-    #    print(output)
         file.write(output)
+
+def showLeaderboard(win):
+    y = 90
+    num = 1
+    with open('leaderboard.csv','r') as file:
+        f = file.read()
+        scoreSplited = f.split(';')
+        for i in range(len(scoreSplited)):
+            scoreSplited[i] = int(scoreSplited[i])
+        scoreSplited.sort(reverse=True)
+
+
+        
+        title = gf.Text(gf.Point(800,50), "Top Scores :")
+        title.setTextColor("black")
+        title.setSize(20)
+        title.draw(win)
+
+        for i in range(3):
+            text = gf.Text(gf.Point(800,y),f"{num}º {scoreSplited[i]}")
+            text.setTextColor("black")
+            text.setSize(15)
+            text.draw(win)
+            y+= 37.5 #não é febre
+            num+=1
+
 
            
 def main():
     #gameOver
     gameOver = False
-
-    grass = drawGrass(win)
-    print(grass)
+    
+    # grass = drawGrass(win)
+    showLeaderboard(win)
     road,dirtRoad = genRoad(win,0)
     print(road)
     genLines(win)
     lines = genLines(win)
+    
     #Cria a antiga FT e o Score que vai aparecer na tela
     score = 0
     scoreText = gf.Text(gf.Point(262, 835), f"{score}")
@@ -302,6 +308,7 @@ def main():
         #Trepidação da Karavan
         shakeTimer += 1
         shakeRight,shakeTimer = shakeKaravan(karavanHitBox,karavanSprite,shakeInterval,shakeRight,shakeTimer)
+        
 
         spawn_timer += 1
         if spawn_timer >= spawn_interval:
@@ -319,8 +326,9 @@ def main():
         #Reseta o tráfego quando atingir o limite vertical da tela
         if resetTraffic(traffic,trafficSpeed):
             score +=1 
-            if score % 50 == 0:
+            if score % 10 == 0:
                 changeRoad(road,dirtRoad,win)
+
 
                 #changeRoad(road,win)
             updateScore(score,scoreText)
