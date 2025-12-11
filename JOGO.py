@@ -55,23 +55,22 @@ def genRoad(win,score):
     road.draw(win)
     return road,dirtRoad
 
-def changeRoad(road,dirtRoad,win):
+def changeRoad(road,win):
+    changeToDirtRoad = False
+    #Muda para a estrada de terra
     if road.getP1().getY() < 900:
         while road.getP1().getY() < 900:
             road.move(0,2)
             win.update()
-            print(road)
-        return road,dirtRoad
-    #MOVE ESTRADA DE TERRA
+            changeToDirtRoad = True
+        return changeToDirtRoad
+    #Muda para a estrada de asfalto
     else:
         while road.getP1().getY() > 0:
             road.move(0,-2)
-            #dirtRoad.move(0,2) #Vai até Y == 900
             win.update()
-            print(road)
- 
-        return road,dirtRoad
-    
+            changeToDirtRoad = False
+        return changeToDirtRoad
 
 def genLines(win):
     #traçado da estrada
@@ -113,7 +112,6 @@ def createRpmBar(win):
     rpmBar.draw(win)
 
     return rpmBar
-
 
 def updateRpmBar(win, rpmBar, rpmValue):
     start = 240 #Onde a barra de rpm começa
@@ -165,9 +163,7 @@ def drawGrass(win):
             line.setFill(random.choice(greens))
             grassList.append(line)
             line.draw(win)
-    return grassList
-
-    
+    return grassList 
 
 def addNewScore(newScore):
     previousScores = []
@@ -191,14 +187,12 @@ def showLeaderboard(win):
             scoreSplited[i] = int(scoreSplited[i])
         scoreSplited.sort(reverse=True)
 
-
-        
         title = gf.Text(gf.Point(800,50), "Top Scores :")
         title.setTextColor("black")
         title.setSize(20)
         title.draw(win)
 
-        for i in range(3):
+        for i in range(5):
             text = gf.Text(gf.Point(800,y),f"{num}º {scoreSplited[i]}")
             text.setTextColor("black")
             text.setSize(15)
@@ -229,9 +223,6 @@ def main():
 
     scoreText.draw(win)
 
-
-    #karavanHitBox.setFill("blue") #Cor da hitbox
-
     #Configurações default da Karavan
     karavanSpriteList = ['karavan-left.png','karavan-right.png','karavan-pop.png']  
     karavanSprite = gf.Image(gf.Point(450, 510), 'playerCar60x60.png')
@@ -248,21 +239,20 @@ def main():
     spawn_interval = 100 #Mais dificil => menor spawn_interval 
 
 
-    
     rpmValue = 0.0
     rpm_speed_up = 0.04
     rpm_speed_down = 0.01
 
     rpmBar = createRpmBar(win)
 
-    shakeRight = True
     shakeTimer = 0
     shakeInterval = 20 #Intervalo entre as trepidações da karavan
+    shakeRight = True
+
+    isDirtRoad = False
 
     
     while not gameOver:
-
-        
 
         key = win.checkKey()
         
@@ -307,8 +297,10 @@ def main():
 
         #Trepidação da Karavan
         shakeTimer += 1
-        shakeRight,shakeTimer = shakeKaravan(karavanHitBox,karavanSprite,shakeInterval,shakeRight,shakeTimer)
-        
+        if isDirtRoad == True:
+            shakeRight, shakeTimer = shakeKaravan(karavanHitBox, karavanSprite,shakeInterval, shakeRight, shakeTimer)
+        else:
+            shakeTimer = 0        
 
         spawn_timer += 1
         if spawn_timer >= spawn_interval:
@@ -320,18 +312,17 @@ def main():
 
         #Função para mover as linhas da rodovia  
         moveLines(lines)
-        
-        #moveGrass(grass)
-
+         
         #Reseta o tráfego quando atingir o limite vertical da tela
         if resetTraffic(traffic,trafficSpeed):
             score +=1 
             if score % 10 == 0:
-                changeRoad(road,dirtRoad,win)
-
+                isDirtRoad = changeRoad(road, win)
+                
 
                 #changeRoad(road,win)
             updateScore(score,scoreText)
+     
 
         #Verifica a colisão da Karavan com os carros da rodovia
         if karavanHasCrashed(traffic,karavanHitBox):
