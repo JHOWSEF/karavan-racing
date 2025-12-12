@@ -3,7 +3,8 @@ import random
 
 #Tela
 win = gf.GraphWin("Jogo de Carro", 900, 900, autoflush=False)
-win.setBackground("darkgreen")
+winColor = gf.color_rgb(230, 204, 140)
+win.setBackground(winColor)
 
 def karavanHasCrashed(traffic,karavanHitBox):
         for trafficHitbox,trafficSprite in traffic:
@@ -180,25 +181,34 @@ def showLeaderboard(win):
 
 
 def chooseGameDifficult(win):
+    difficulttxt = gf.Text(gf.Point(440,100), "Selecionar Dificuldade : ")
+    difficulttxt.setSize(20)
+    difficulttxt.draw(win)
     easyDifficultText = gf.Text(gf.Point(430,180), "Fácil")
     easyDifficultText.setTextColor("white")
-    easyDifficultBackground = gf.Rectangle(gf.Point(250, 150), gf.Point(615, 200))
+    easyDifficultimg = gf.Image(gf.Point(430,180), "easybutton.png")
+    easyDifficultBackground = gf.Rectangle(gf.Point(280, 160), gf.Point(580, 200))
     easyDifficultBackground.setFill('blue')
     easyDifficultBackground.draw(win)
+    easyDifficultimg.draw(win)
     easyDifficultText.draw(win)
 
     mediumDifficultText = gf.Text(gf.Point(430,225), "Normal")
     mediumDifficultText.setTextColor("white")
-    mediumDifficultBackground = gf.Rectangle(gf.Point(250, 200), gf.Point(615, 250))
+    mediumDifficultimg = gf.Image(gf.Point(430,225), "mediumbutton.png")
+    mediumDifficultBackground = gf.Rectangle(gf.Point(280, 210), gf.Point(580, 250))
     mediumDifficultBackground.setFill('darkgrey')
     mediumDifficultBackground.draw(win)
+    mediumDifficultimg.draw(win)
     mediumDifficultText.draw(win)
 
     hardDifficultText = gf.Text(gf.Point(430,275), "Dificil")
     hardDifficultText.setTextColor("white")
-    hardDifficultBackground = gf.Rectangle(gf.Point(250, 250), gf.Point(615, 300))
+    hardDifficultimg = gf.Image(gf.Point(430,275), "hardbutton.png")
+    hardDifficultBackground = gf.Rectangle(gf.Point(280, 260), gf.Point(580, 300))
     hardDifficultBackground.setFill('red')
     hardDifficultBackground.draw(win)
+    hardDifficultimg.draw(win)
     hardDifficultText.draw(win)
 
     click = win.getMouse()
@@ -207,10 +217,13 @@ def chooseGameDifficult(win):
         trafficSpawnInterval = 60
         trafficSpeed = 2
         easyDifficultBackground.undraw()
+        easyDifficultimg.undraw()
         easyDifficultText.undraw()
         mediumDifficultBackground.undraw()
+        mediumDifficultimg.undraw()
         mediumDifficultText.undraw()
         hardDifficultBackground.undraw()
+        hardDifficultimg.undraw()
         hardDifficultText.undraw()
         main(karavanAcceleration,trafficSpawnInterval,trafficSpeed)
         
@@ -219,10 +232,13 @@ def chooseGameDifficult(win):
         trafficSpawnInterval = 50
         trafficSpeed = 3
         easyDifficultBackground.undraw()
+        easyDifficultimg.undraw()
         easyDifficultText.undraw()
         mediumDifficultBackground.undraw()
+        mediumDifficultimg.undraw()
         mediumDifficultText.undraw()
         hardDifficultBackground.undraw()
+        hardDifficultimg.undraw()
         hardDifficultText.undraw()
         main(karavanAcceleration,trafficSpawnInterval,trafficSpeed)
         
@@ -231,10 +247,13 @@ def chooseGameDifficult(win):
         trafficSpawnInterval = 25
         trafficSpeed = 3.5
         easyDifficultBackground.undraw()
+        easyDifficultimg.undraw()
         easyDifficultText.undraw()
         mediumDifficultBackground.undraw()
+        mediumDifficultimg.undraw()
         mediumDifficultText.undraw()
         hardDifficultBackground.undraw()
+        hardDifficultimg.undraw()
         hardDifficultText.undraw()
         main(karavanAcceleration,trafficSpawnInterval,trafficSpeed)
         
