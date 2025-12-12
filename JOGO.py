@@ -3,7 +3,7 @@ import random
 
 #Tela
 win = gf.GraphWin("Jogo de Carro", 900, 900, autoflush=False)
-win.setBackground("green")
+win.setBackground("darkgreen")
 
 def karavanHasCrashed(traffic,karavanHitBox):
         for trafficHitbox,trafficSprite in traffic:
@@ -103,18 +103,15 @@ def moveLines(lines):
             line.move(0, dy)
 
 def createRpmBar(win):
-    rpmBarBackground = gf.Rectangle(gf.Point(235, 685), gf.Point(615, 715))
-    rpmBarBackground.setFill("darkgrey")
-    rpmBarBackground.draw(win)
 
-    rpmBar = gf.Rectangle(gf.Point(240, 710), gf.Point(240, 720))
+    rpmBar = gf.Rectangle(gf.Point(235, 710), gf.Point(240, 720))
     rpmBar.setFill("yellow")
     rpmBar.draw(win)
 
     return rpmBar
 
 def updateRpmBar(win, rpmBar, rpmValue):
-    start = 240 #Onde a barra de rpm começa
+    start = 235 #Onde a barra de rpm começa
     maxRpm = 615 #Ponto limite da barra de rpm
 
     x = start + (maxRpm - start) * rpmValue  # Cálculo da posição final da barra de rpm 
@@ -145,25 +142,6 @@ def shakeKaravan(karavanHitBox,karavanSprite,shakeInterval,shakeRight,shakeTimer
         
     return shakeRight, shakeTimer
     
-def drawGrass(win):
-    count=100
-    grassList = []
-    for i in range(count):
-        x = random.randint(0, 900)
-        y = random.randint(0, 700)
-        size = random.randint(4, 10)
-
-        for i in range(10):
-            line = gf.Line(
-                gf.Point(x, y),
-                gf.Point(x + random.randint(-size, size), y - random.randint(3, size))
-            )
-            line.setWidth(1)
-            greens = ["#228b22", "#006400", "#32cd32", "#00aa44"] 
-            line.setFill(random.choice(greens))
-            grassList.append(line)
-            line.draw(win)
-    return grassList 
 
 def addNewScore(newScore):
     previousScores = []
@@ -201,8 +179,121 @@ def showLeaderboard(win):
             num+=1
 
 
+def chooseGameDifficult(win):
+    easyDifficultText = gf.Text(gf.Point(430,180), "Fácil")
+    easyDifficultText.setTextColor("white")
+    easyDifficultBackground = gf.Rectangle(gf.Point(250, 150), gf.Point(615, 200))
+    easyDifficultBackground.setFill('blue')
+    easyDifficultBackground.draw(win)
+    easyDifficultText.draw(win)
+
+    mediumDifficultText = gf.Text(gf.Point(430,225), "Normal")
+    mediumDifficultText.setTextColor("white")
+    mediumDifficultBackground = gf.Rectangle(gf.Point(250, 200), gf.Point(615, 250))
+    mediumDifficultBackground.setFill('darkgrey')
+    mediumDifficultBackground.draw(win)
+    mediumDifficultText.draw(win)
+
+    hardDifficultText = gf.Text(gf.Point(430,275), "Dificil")
+    hardDifficultText.setTextColor("white")
+    hardDifficultBackground = gf.Rectangle(gf.Point(250, 250), gf.Point(615, 300))
+    hardDifficultBackground.setFill('red')
+    hardDifficultBackground.draw(win)
+    hardDifficultText.draw(win)
+
+    click = win.getMouse()
+    if (click.getX() in range(250,615) and click.getY() in range(150,200)): #Área do botão de dificuldade fácil
+        karavanAcceleration = 25 #Mais dificil -> maior velocidade da karavan
+        trafficSpawnInterval = 60
+        trafficSpeed = 2
+        easyDifficultBackground.undraw()
+        easyDifficultText.undraw()
+        mediumDifficultBackground.undraw()
+        mediumDifficultText.undraw()
+        hardDifficultBackground.undraw()
+        hardDifficultText.undraw()
+        main(karavanAcceleration,trafficSpawnInterval,trafficSpeed)
+        
+    elif (click.getX() in range(250,615) and click.getY() in range(200,250)): #Área do botão de dificuldade média
+        karavanAcceleration = 20 #Mais dificil -> maior velocidade da karavan
+        trafficSpawnInterval = 50
+        trafficSpeed = 3
+        easyDifficultBackground.undraw()
+        easyDifficultText.undraw()
+        mediumDifficultBackground.undraw()
+        mediumDifficultText.undraw()
+        hardDifficultBackground.undraw()
+        hardDifficultText.undraw()
+        main(karavanAcceleration,trafficSpawnInterval,trafficSpeed)
+        
+    elif (click.getX() in range(250,615) and click.getY() in range(250,300)): #Área do botão de dificuldade dificil
+        karavanAcceleration = 15 #Mais dificil -> maior velocidade da karavan
+        trafficSpawnInterval = 25
+        trafficSpeed = 3.5
+        easyDifficultBackground.undraw()
+        easyDifficultText.undraw()
+        mediumDifficultBackground.undraw()
+        mediumDifficultText.undraw()
+        hardDifficultBackground.undraw()
+        hardDifficultText.undraw()
+        main(karavanAcceleration,trafficSpawnInterval,trafficSpeed)
+        
+
+
+def genEndGameButtons(win,score):
+    
+    finalScoreText = gf.Text(gf.Point(430,225), f'Sua pontuação foi : {score}')
+    finalScoreText.setTextColor("black")
+    finalScoreBackground = gf.Rectangle(gf.Point(250, 200), gf.Point(615, 250))
+    finalScoreBackground.setFill('darkgrey')
+    finalScoreBackground.draw(win)
+    finalScoreText.draw(win)
+
+    leaveGameText = gf.Text(gf.Point(325,425), f'Sair') # Entre 400 e 450
+    leaveGameText.setTextColor("white")
+    leaveGameBackground = gf.Rectangle(gf.Point(250, 400), gf.Point(400, 450))
+    leaveGameBackground.setFill('red')
+    leaveGameBackground.draw(win)
+    leaveGameText.draw(win)
+
+    playAgainText = gf.Text(gf.Point(545,425), f'Jogar Novamente')
+    playAgainText.setTextColor("white")
+    playAgainBackground = gf.Rectangle(gf.Point(465, 400), gf.Point(615, 450))
+    playAgainBackground.setFill('darkgrey')
+    playAgainBackground.draw(win)
+    playAgainText.draw(win)
+
+    click = win.getMouse()
+
+    if (click.getX() in range(250,400) and click.getY() in range(400,450)):
+        win.close()
+    elif (click.getX() in range(465,615) and click.getY() in range(400,450)):
+        finalScoreBackground.undraw()
+        finalScoreText.undraw()
+        leaveGameBackground.undraw()
+        leaveGameText.undraw()
+        playAgainBackground.undraw()
+        playAgainText.undraw()
+        chooseGameDifficult(win)
+
+def undrawAll(ft,scoreText,karavanSprite,karavanHitBox,rpmBar,road,dirtRoad,lines,traffic):
+    ft.undraw()
+    scoreText.undraw()
+    karavanSprite.undraw()
+    karavanHitBox.undraw()
+    print(rpmBar)
+    rpmBar.undraw()
+    road.undraw()
+    dirtRoad.undraw()
+    for line in lines:
+        line.undraw()
+    for carShape,carImg in traffic:
+        carShape.undraw()
+        carImg.undraw()
+
+
            
-def main():
+def main(karavanAcceleration, trafficSpawnInterval, trafficSpeed):
     #gameOver
     gameOver = False
     
@@ -210,7 +301,7 @@ def main():
     showLeaderboard(win)
     road,dirtRoad = genRoad(win,0)
     print(road)
-    genLines(win)
+    #genLines(win)
     lines = genLines(win)
     
     #Cria a antiga FT e o Score que vai aparecer na tela
@@ -227,16 +318,16 @@ def main():
     karavanSpriteList = ['karavan-left.png','karavan-right.png','karavan-pop.png']  
     karavanSprite = gf.Image(gf.Point(450, 510), 'playerCar60x60.png')
     karavanHitBox = gf.Rectangle(gf.Point(440, 530), gf.Point(460, 570))
-    karavanAcceleration = 20 #Mais dificil -> maior velocidade da karavan
+    #karavanAcceleration = 20 #Mais dificil -> maior velocidade da karavan
     karavanDisacceleration = 4
     karavanHitBox.draw(win)
     currentKaravanSprite = 0
 
     #Configurações default do tráfego
     traffic = []
-    trafficSpeed = 2
+    #trafficSpeed = 2
     spawn_timer = 0  
-    spawn_interval = 100 #Mais dificil => menor spawn_interval 
+    #trafficSpawnInterval = 100 #Mais dificil => menor trafficSpawnInterval 
 
 
     rpmValue = 0.0
@@ -253,11 +344,9 @@ def main():
 
     
     while not gameOver:
-
-        key = win.checkKey()
         
-        karavanX1 = karavanHitBox.getP1().getX()
-        karavanY1 = karavanHitBox.getP1().getY()
+        karavanX1 = karavanHitBox.getP1().getX() #Posição X da hitbox da Karavan
+        karavanY1 = karavanHitBox.getP1().getY() #Posição Y da hitbox da Karavan
 
         karavanSprite.undraw()
 
@@ -266,7 +355,9 @@ def main():
         currentKaravanSprite += 1
         if currentKaravanSprite > 2:
             currentKaravanSprite = 0
-        
+
+        key = win.checkKey()
+
         if key.upper() == "A" and karavanHitBox.getP1().getX() > 205:
             karavanHitBox.move(-karavanAcceleration, 0)
             karavanSprite.move(-karavanAcceleration, 0)
@@ -303,7 +394,7 @@ def main():
             shakeTimer = 0        
 
         spawn_timer += 1
-        if spawn_timer >= spawn_interval:
+        if spawn_timer >= trafficSpawnInterval:
             spawn_timer = 0
             genTraffic(traffic)
 
@@ -316,21 +407,24 @@ def main():
         #Reseta o tráfego quando atingir o limite vertical da tela
         if resetTraffic(traffic,trafficSpeed):
             score +=1 
-            if score % 10 == 0:
+            if score % 40 == 0: #A cada 20 pontos, troca a estrada
                 isDirtRoad = changeRoad(road, win)
-                
-
-                #changeRoad(road,win)
+        
             updateScore(score,scoreText)
      
 
         #Verifica a colisão da Karavan com os carros da rodovia
         if karavanHasCrashed(traffic,karavanHitBox):
             print('Karavan Crashed')
-            win.getMouse()
+            undrawAll(ft,scoreText,karavanSprite,karavanHitBox,rpmBar,road,dirtRoad,lines,traffic)
+            genEndGameButtons(win,score)
+
+            #chooseGameDifficult(win)
+            
             gameOver = True
             newScore = addNewScore(score)
 
 
+chooseGameDifficult(win)
 
-main()
+#main()
