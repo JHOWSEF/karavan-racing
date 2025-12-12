@@ -13,16 +13,6 @@ máximo possível desviando de obstáculos e acumulando pontos."**
 
 ------------------------------------------------------------------------
 
-## 🧩 **História**
-
-Conte a lore do jogo aqui. Pode seguir esta estrutura: - Quem é o
-personagem\
-- O mundo onde o jogo acontece\
-- O problema/desafio que iniciou a aventura\
-- O objetivo final do jogador
-
-------------------------------------------------------------------------
-
 ## ⚙️ **Ultimas Atualizações**
 
 Features mais recentes:
