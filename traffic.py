@@ -2,7 +2,7 @@ import graphics as gf
 import random
 
 def genTraffic(trafficList,win):
-        trafficCarsImg = ['img/traffic/f1_enemy.png','img/traffic/whiteCar_enemy.png','img/traffic/yellowCar_enemy.png','img/traffic/playerCar60x60.png','img/traffic/redCar_enemy.png','img/traffic/blueCar_enemy.png','img/traffic/bugattiCar_enemy.png','img/traffic/greenCar_enemy.png','img/traffic/greyMercedesTraffic.png']
+        trafficCarsImg = ['img/traffic/f1_enemy.png','img/traffic/whiteCar_enemy.png','img/traffic/yellowCar_enemy.png','img/traffic/playerCar60x60.png','img/traffic/redCar_enemy.png','img/traffic/blueCar_enemy.png','img/traffic/bugattiCar_enemy.png','img/traffic/greenCar_enemy.png','img/traffic/greyMercedesTraffic.png','img/traffic/redFerrariTraffic.png','img/traffic/yellowLamboTraffic.png']
         largSprite = 30
         altSprite = 30
         x1 = random.randint(220, 660 - largSprite )
@@ -16,6 +16,8 @@ def genTraffic(trafficList,win):
         trafficSprite.draw(win)
         trafficList.append((trafficHitbox,trafficSprite))
 
+
+
 def resetTraffic(trafficList,score):
     for trafficHitbox,trafficSprite in trafficList:
         if trafficHitbox.getP1().getY() > 600: #Se atingir o limite vertical da tela
@@ -23,6 +25,8 @@ def resetTraffic(trafficList,score):
             trafficSprite.undraw()
             trafficList.remove((trafficHitbox,trafficSprite))
             return True
+        
+        
 
 def moveTraffic(trafficList,trafficSpeed):
     #loop para mover os inimigos
