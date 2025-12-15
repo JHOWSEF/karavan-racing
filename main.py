@@ -1,5 +1,4 @@
 import graphics as gf
-import random
 import traffic
 import leaderboard
 import score
@@ -18,10 +17,8 @@ def game(karavanAcceleration, trafficSpawnInterval, trafficSpeed):
     #gameOver
     gameOver = False
     
-    # grass = drawGrass(win)
     topScoreTxt,previousScores = leaderboard.showLeaderboard(win)
     newRoad,dirtRoad = road.genRoad(win,0)
-    #genLines(win)
     lines = road.genLines(win)
     
     #Cria a antiga FT e o Score que vai aparecer na tela
@@ -38,14 +35,12 @@ def game(karavanAcceleration, trafficSpawnInterval, trafficSpeed):
     karavanSpriteList = ['img/karavan/karavan-left.png','img/karavan/karavan-right.png','img/karavan/karavan-pop.png']  
     karavanSprite = gf.Image(gf.Point(450, 510), 'img/karavan/karavan.png')
     karavanHitBox = gf.Rectangle(gf.Point(440, 530), gf.Point(460, 570))
-    #karavanAcceleration = 20 #Mais dificil -> maior velocidade da karavan
     karavanDisacceleration = 4
     karavanHitBox.draw(win)
     currentKaravanSprite = 0
 
     #Configurações default do tráfego
     trafficList = []
-    #trafficSpeed = 2
     spawn_timer = 0  
     #trafficSpawnInterval = 100 #Mais dificil => menor trafficSpawnInterval 
 
@@ -57,10 +52,12 @@ def game(karavanAcceleration, trafficSpawnInterval, trafficSpeed):
     newRpmBar = rpmBar.createRpmBar(win)
 
     shakeTimer = 0
-    shakeInterval = 20 #Intervalo entre as trepidações da karavan
-    shakeRight = True
 
-    isDirtRoad = False
+    shakeInterval = 20 #Intervalo entre as trepidações da karavan -> (20 passadas de while)
+
+    shakeRight = True #Verifica se é possivel trepidar para a direita -> Se for FALSE - Então ele trepida para a esquerda
+
+    isDirtRoad = False #Começa com a rodovia
 
     
     while not gameOver:
@@ -132,7 +129,7 @@ def game(karavanAcceleration, trafficSpawnInterval, trafficSpeed):
         #Reseta o tráfego quando atingir o limite vertical da tela
         if traffic.resetTraffic(trafficList,trafficSpeed):
             currentScore +=1 
-            if currentScore % 40 == 0: #A cada 40 pontos, troca a estrada
+            if currentScore % 50 == 0: #A cada 40 pontos, troca a estrada
                 isDirtRoad = road.changeRoad(newRoad, win) 
                             
             score.updateScore(currentScore,scoreText)

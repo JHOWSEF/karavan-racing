@@ -2,7 +2,7 @@ import graphics as gf
 import random
 
 def genTraffic(trafficList,win):
-        trafficCarsImg = ['img/traffic/f1_enemy.png','img/traffic/whiteCar_enemy.png','img/traffic/yellowCar_enemy.png','img/traffic/playerCar60x60.png','img/traffic/redCar_enemy.png','img/traffic/blueCar_enemy.png','img/traffic/bugattiCar_enemy.png','img/traffic/greenCar_enemy.png','img/traffic/greyMercedesTraffic.png','img/traffic/redFerrariTraffic.png','img/traffic/yellowLamboTraffic.png']
+        trafficCarsImg = ['img/traffic/f1_enemy.png','img/traffic/whiteCar_enemy.png','img/traffic/yellowCar_enemy.png','img/traffic/playerCar60x60.png','img/traffic/redCar_enemy.png','img/traffic/blueCar_enemy.png','img/traffic/bugattiCar_enemy.png','img/traffic/greenCar_enemy.png','img/traffic/greyMercedesTraffic.png','img/traffic/redFerrariTraffic.png','img/traffic/yellowLamboTraffic.png','img/traffic/purplePaganiTraffic.png']
         largSprite = 30
         altSprite = 30
         x1 = random.randint(220, 660 - largSprite )
