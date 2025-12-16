@@ -1,29 +1,29 @@
 import graphics as gf
 
-def chooseGameDifficult(win): #Gera todo o menu de escolha de dificuldade
+def chooseGameDifficulty(win): #Gera todo o menu de escolha de dificuldade
     backgroundMenuImg = gf.Image(gf.Point(450,450),'img/menu/menuImg.png')
     backgroundMenuImg.draw(win)
-    selectDifficultText = gf.Text(gf.Point(440,270), "Selecionar Dificuldade : ")
-    selectDifficultText.setSize(30)
-    selectDifficultText.setTextColor('white')
-    selectDifficultText.draw(win)
-    easyDifficultText = gf.Text(gf.Point(430,350), "Fácil")
-    easyDifficultText.setTextColor("white")
-    easyDifficultImg = gf.Image(gf.Point(430,350), "img/menu/easybutton.png")
-    easyDifficultImg.draw(win)
-    easyDifficultText.draw(win)
+    selectDifficultyText = gf.Text(gf.Point(440,270), "Selecionar Dificuldade : ")
+    selectDifficultyText.setSize(30)
+    selectDifficultyText.setTextColor('white')
+    selectDifficultyText.draw(win)
+    easyDifficultyText = gf.Text(gf.Point(430,350), "Fácil")
+    easyDifficultyText.setTextColor("white")
+    easyDifficultyImg = gf.Image(gf.Point(430,350), "img/menu/easybutton.png")
+    easyDifficultyImg.draw(win)
+    easyDifficultyText.draw(win)
 
-    mediumDifficultText = gf.Text(gf.Point(430,420), "Normal")
-    mediumDifficultText.setTextColor("white")
-    mediumDifficultImg = gf.Image(gf.Point(430,420), "img/menu/mediumbutton.png")
-    mediumDifficultImg.draw(win)
-    mediumDifficultText.draw(win)
+    mediumDifficultyText = gf.Text(gf.Point(430,420), "Normal")
+    mediumDifficultyText.setTextColor("white")
+    mediumDifficultyImg = gf.Image(gf.Point(430,420), "img/menu/mediumbutton.png")
+    mediumDifficultyImg.draw(win)
+    mediumDifficultyText.draw(win)
 
-    hardDifficultText = gf.Text(gf.Point(430,490), "Dificil")
-    hardDifficultText.setTextColor("white")
-    hardDifficultImg = gf.Image(gf.Point(430,490), "img/menu/hardbutton.png")
-    hardDifficultImg.draw(win)
-    hardDifficultText.draw(win)
+    hardDifficultyText = gf.Text(gf.Point(430,490), "Dificil")
+    hardDifficultyText.setTextColor("white")
+    hardDifficultyImg = gf.Image(gf.Point(430,490), "img/menu/hardbutton.png")
+    hardDifficultyImg.draw(win)
+    hardDifficultyText.draw(win)
 
     
 
@@ -36,42 +36,45 @@ def chooseGameDifficult(win): #Gera todo o menu de escolha de dificuldade
             karavanAcceleration = 25 #Mais dificil -> maior velocidade da karavan
             trafficSpawnInterval = 60
             trafficSpeed = 2
-            easyDifficultImg.undraw()
-            easyDifficultText.undraw()
-            mediumDifficultImg.undraw()
-            mediumDifficultText.undraw()
-            hardDifficultImg.undraw()
-            hardDifficultText.undraw()
-            selectDifficultText.undraw()
+            difficulty = 'easy'
+            easyDifficultyImg.undraw()
+            easyDifficultyText.undraw()
+            mediumDifficultyImg.undraw()
+            mediumDifficultyText.undraw()
+            hardDifficultyImg.undraw()
+            hardDifficultyText.undraw()
+            selectDifficultyText.undraw()
             backgroundMenuImg.undraw()
-            return karavanAcceleration, trafficSpawnInterval, trafficSpeed
+            return karavanAcceleration, trafficSpawnInterval, trafficSpeed, difficulty
 
         elif (click.getX() in range(280,580) and click.getY() in range(395,445)): #Área do botão de dificuldade média
             karavanAcceleration = 20 #Mais dificil -> maior velocidade da karavan
             trafficSpawnInterval = 50
             trafficSpeed = 3
-            easyDifficultImg.undraw()
-            easyDifficultText.undraw()
-            mediumDifficultImg.undraw()
-            mediumDifficultText.undraw()
-            hardDifficultImg.undraw()
-            hardDifficultText.undraw()
-            selectDifficultText.undraw()
+            difficulty = 'medium'
+            easyDifficultyImg.undraw()
+            easyDifficultyText.undraw()
+            mediumDifficultyImg.undraw()
+            mediumDifficultyText.undraw()
+            hardDifficultyImg.undraw()
+            hardDifficultyText.undraw()
+            selectDifficultyText.undraw()
             backgroundMenuImg.undraw()
-            return karavanAcceleration, trafficSpawnInterval, trafficSpeed
+            return karavanAcceleration, trafficSpawnInterval, trafficSpeed, difficulty
         elif (click.getX() in range(280,580) and click.getY() in range(465,515)): #Área do botão de dificuldade dificil
             karavanAcceleration = 15 #Mais dificil -> maior velocidade da karavan
             trafficSpawnInterval = 25
             trafficSpeed = 3.5
-            easyDifficultImg.undraw()
-            easyDifficultText.undraw()
-            mediumDifficultImg.undraw()
-            mediumDifficultText.undraw()
-            hardDifficultImg.undraw()
-            hardDifficultText.undraw()
-            selectDifficultText.undraw()
+            difficulty = 'hard'
+            easyDifficultyImg.undraw()
+            easyDifficultyText.undraw()
+            mediumDifficultyImg.undraw()
+            mediumDifficultyText.undraw()
+            hardDifficultyImg.undraw()
+            hardDifficultyText.undraw()
+            selectDifficultyText.undraw()
             backgroundMenuImg.undraw()
-            return karavanAcceleration, trafficSpawnInterval, trafficSpeed
+            return karavanAcceleration, trafficSpawnInterval, trafficSpeed, difficulty
         
 
         
@@ -117,7 +120,7 @@ def genEndGameButtons(win,score): #Gera os botões quando o jogo termina
             playAgainText.undraw()
             backgroundMenuImg.undraw()
             return True
-            #chooseGameDifficult(win)
+            #chooseGameDifficulty(win)
         elif (click.getX() in range(250,400) and click.getY() in range(400,450)):
             break
     win.close()
@@ -132,7 +135,7 @@ def undrawAll(ft,scoreText,karavanSprite,karavanHitBox,rpmBar,road,dirtRoad,line
     rpmBar.undraw()
     road.undraw()
     dirtRoad.undraw()
-    topScoreTxt.undraw()
+    
     for score in previousScores:
         score.undraw()
     for line in lines:
@@ -140,3 +143,5 @@ def undrawAll(ft,scoreText,karavanSprite,karavanHitBox,rpmBar,road,dirtRoad,line
     for carShape,carImg in trafficList:
         carShape.undraw()
         carImg.undraw()
+    if topScoreTxt != '': #Se não for a primeira vez que está sendo executado - leaderboard.txt não vai estar vazio
+        topScoreTxt.undraw()

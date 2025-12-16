@@ -13,11 +13,11 @@ winColor = gf.color_rgb(255, 178, 102) #Cor do deserto
 win.setBackground(winColor)
 
            
-def game(karavanAcceleration, trafficSpawnInterval, trafficSpeed):
+def game(karavanAcceleration, trafficSpawnInterval, trafficSpeed, difficulty):
     #gameOver
     gameOver = False
     
-    topScoreTxt,previousScores = leaderboard.showLeaderboard(win)
+    topScoreTxt,previousScores = leaderboard.showLeaderboard(win,difficulty)
     newRoad,dirtRoad = road.genRoad(win,0)
     lines = road.genLines(win)
     
@@ -138,17 +138,17 @@ def game(karavanAcceleration, trafficSpawnInterval, trafficSpeed):
         #Verifica a colisão da Karavan com os carros da rodovia
         if karavan.karavanHasCrashed(trafficList,karavanHitBox):
             print('Karavan Crashed')
-            addNewScore = score.addNewScore(currentScore)
+            addNewScore = score.addNewScore(currentScore, difficulty)
             menu.undrawAll(ft,scoreText,karavanSprite,karavanHitBox,newRpmBar,newRoad,dirtRoad,lines,trafficList,topScoreTxt,previousScores)
             playAgain = menu.genEndGameButtons(win,currentScore)
             if playAgain:
-                karavanAcceleration, trafficSpawnInterval, trafficSpeed = menu.chooseGameDifficult(win)
-                game(karavanAcceleration, trafficSpawnInterval, trafficSpeed)
+                karavanAcceleration, trafficSpawnInterval, trafficSpeed, difficulty = menu.chooseGameDifficulty(win)
+                game(karavanAcceleration, trafficSpawnInterval, trafficSpeed, difficulty)
             
-            #chooseGameDifficult(win)
+            #chooseGameDifficulty(win)
             
             gameOver = True
 
-karavanAcceleration, trafficSpawnInterval, trafficSpeed = menu.chooseGameDifficult(win)
+karavanAcceleration, trafficSpawnInterval, trafficSpeed, difficulty = menu.chooseGameDifficulty(win)
 
-game(karavanAcceleration, trafficSpawnInterval, trafficSpeed)
+game(karavanAcceleration, trafficSpawnInterval, trafficSpeed, difficulty)
