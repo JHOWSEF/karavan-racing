@@ -147,7 +147,7 @@ def game(karavanAcceleration, trafficSpawnInterval, trafficSpeed, difficulty):
             if playAgain:
                 karavanAcceleration, trafficSpawnInterval, trafficSpeed, difficulty = menu.chooseGameDifficulty(win) #Exibe o menu de escolha de dificuldade
                 game(karavanAcceleration, trafficSpawnInterval, trafficSpeed, difficulty) #Inicia o jogo
-
+            gameOver = True
 
 
 karavanAcceleration, trafficSpawnInterval, trafficSpeed, difficulty = menu.chooseGameDifficulty(win)
