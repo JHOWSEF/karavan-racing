@@ -39,7 +39,6 @@ Features mais recentes:
 
 -   Python 3.12\
 -   Graphics.py\
--   (adicione outras libs/tecnologias)
 
 ------------------------------------------------------------------------
 
