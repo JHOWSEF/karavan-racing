@@ -51,7 +51,7 @@ def chooseGameDifficulty(win): #Gera todo o menu de escolha de dificuldade
             karavanAcceleration = 20 #Mais dificil -> maior velocidade da karavan
             trafficSpawnInterval = 50
             trafficSpeed = 3
-            difficulty = 'medium'
+            difficulty = 'normal'
             easyDifficultyImg.undraw()
             easyDifficultyText.undraw()
             mediumDifficultyImg.undraw()

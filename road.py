@@ -57,10 +57,10 @@ def genLines(win):
 
 
 
-def moveLines(lines):
-    speed = 6
+def moveLines(lines): #Move as linhas já existentes da rodovia
+    speed = 6 #Velocidade em que as linhas se movem
     for line in lines:
         line.move(0, speed)
-        if line.getP1().getY() > 600:  
-            dy = -600  # sobe tudo de volta
+        if line.getP1().getY() > 600:#Se a linha chegar no limite da tela
+            dy = -600  # Sobe tudo de volta
             line.move(0, dy)

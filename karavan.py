@@ -6,18 +6,18 @@ def karavanHasCrashed(trafficList,karavanHitBox):
                 return True
             
 
-def shakeKaravan(karavanHitBox,karavanSprite,shakeInterval,shakeRight,shakeTimer): 
+def shakeKaravan(karavanHitBox,karavanSprite,shakeKaravanInterval,canKaravanShakeRight,shakeKaravanTimer): 
 
-    if shakeTimer >= shakeInterval:
-        shakeTimer = 0
+    if shakeKaravanTimer >= shakeKaravanInterval: #ShakeKaravanTimer estava sendo incrementado na main
+        shakeKaravanTimer = 0 #Reseta o timer
 
-        if shakeRight == True:
+        if canKaravanShakeRight == True: 
             karavanHitBox.move(7, 0)
             karavanSprite.move(7, 0)
-            shakeRight = False
+            canKaravanShakeRight = False
         else:
             karavanHitBox.move(-7, 0)
             karavanSprite.move(-7, 0)
-            shakeRight = True
+            canKaravanShakeRight = True
         
-    return shakeRight, shakeTimer
+    return canKaravanShakeRight, shakeKaravanTimer

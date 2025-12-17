@@ -12,7 +12,7 @@ def addNewScore(newScore, difficulty):
         if len(fileContent) < 1: #Se o arquivo de leaderboard estiver vazio (primeira vez executando o jogo)
             defaultScoreDict = {
                 'easy': [],
-                'medium': [],
+                'normal': [],
                 'hard': [],
             }
             defaultScoreDict[difficulty].append(newScore)

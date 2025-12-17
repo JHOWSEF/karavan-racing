@@ -6,6 +6,7 @@ import road
 import karavan
 import rpmBar
 import menu
+import config
 
 #Tela
 win = gf.GraphWin("Karavan Racing - The Game", 900, 900, autoflush=False)
@@ -19,43 +20,44 @@ def game(karavanAcceleration, trafficSpawnInterval, trafficSpeed, difficulty):
     
     topScoreTxt,previousScores = leaderboard.showLeaderboard(win,difficulty)
     newRoad,dirtRoad = road.genRoad(win,0)
-    lines = road.genLines(win)
+    lines = road.genLines(win) #Gera as linhas da rodovia
     
     #Cria a antiga FT e o Score que vai aparecer na tela
-    currentScore = 0
+    currentScore = 0 #Inicia o score
     scoreText = gf.Text(gf.Point(262, 835), f"{currentScore}")
     scoreText.setTextColor('white')
     scoreText.setSize(18)
-    ft = gf.Image(gf.Point(455,775), "img/ft/ft700.png")
-    ft.draw(win)
+    
 
+    ft = gf.Image(gf.Point(455,775), "img/ft/ft700.png") #Gera a FT
+    ft.draw(win)
+    
     scoreText.draw(win)
 
     #Configurações default da Karavan
-    karavanSpriteList = ['img/karavan/karavan-left.png','img/karavan/karavan-right.png','img/karavan/karavan-pop.png']  
-    karavanSprite = gf.Image(gf.Point(450, 510), 'img/karavan/karavan.png')
-    karavanHitBox = gf.Rectangle(gf.Point(440, 530), gf.Point(460, 570))
-    karavanDisacceleration = 4
-    karavanHitBox.draw(win)
+    karavanSpriteList = config.KARAVANSPRITELIST  
+    karavanSprite = config.KARAVANSPRITE
+    karavanHitBox = config.KARAVANHITBOX
+    karavanDisacceleration = config.KARAVANDESACCELERATION #O quanto a karavan vai desacelerar quando 'S' for pressionado
+    karavanHitBox.draw(win) 
     currentKaravanSprite = 0
 
     #Configurações default do tráfego
     trafficList = []
-    spawn_timer = 0  
+    trafficSpawnTimer = 0  
     #trafficSpawnInterval = 100 #Mais dificil => menor trafficSpawnInterval 
 
-
-    rpmValue = 0.0
-    rpmSpeedUp = 0.04
-    rpmSpeedDown = 0.01
+    rpmValue = 0.0 # Rpm começa em 0
+    rpmSpeedUp = 0.04 # Decimal de quanto o que o rpm vai subir ao clicar em W
+    rpmSpeedDown = 0.01 # Decima de quanto o rpm vai descer ao clicar em S
 
     newRpmBar = rpmBar.createRpmBar(win)
 
-    shakeTimer = 0
+    shakeKaravanTimer = config.SHAKEKARAVANTIMER #Variável que vai ser incrementada durante a execução do while
 
-    shakeInterval = 20 #Intervalo entre as trepidações da karavan -> (20 passadas de while)
+    shakeKaravanInterval = config.SHAKEKARAVANINTERVAL #Intervalo entre as trepidações da karavan -> (20 passadas de while)
 
-    shakeRight = True #Verifica se é possivel trepidar para a direita -> Se for FALSE - Então ele trepida para a esquerda
+    canKaravanShakeRight = True #Verifica se é possivel trepidar para a direita -> Se for FALSE - Então ele trepida para a esquerda
 
     isDirtRoad = False #Começa com a rodovia
 
@@ -69,8 +71,9 @@ def game(karavanAcceleration, trafficSpawnInterval, trafficSpeed, difficulty):
 
         karavanSprite = gf.Image(gf.Point(karavanX1 + 10, karavanY1 + 20), karavanSpriteList[currentKaravanSprite])
         karavanSprite.draw(win)
-        currentKaravanSprite += 1
-        if currentKaravanSprite > 2:
+
+        currentKaravanSprite += 1 #Sprite atual da Karavan
+        if currentKaravanSprite > 2: #Se chegar ao limite da lista de sprites, volta a 0 -> Tornando essa lista cíclica
             currentKaravanSprite = 0
 
         key = win.checkKey()
@@ -104,20 +107,20 @@ def game(karavanAcceleration, trafficSpawnInterval, trafficSpeed, difficulty):
             win.close()
 
         #Trepidação da Karavan
-        shakeTimer += 1
-        if isDirtRoad == True:
-            shakeRight, shakeTimer = karavan.shakeKaravan(karavanHitBox, karavanSprite,shakeInterval, shakeRight, shakeTimer)
+        shakeKaravanTimer += 1
+        if isDirtRoad == True: #Se a estrada for de terra, a karavan começa a trepidar
+            canKaravanShakeRight, shakeKaravanTimer = karavan.shakeKaravan(karavanHitBox, karavanSprite,shakeKaravanInterval, canKaravanShakeRight, shakeKaravanTimer)
             for line in lines:
-                line.setFill(gf.color_rgb(101, 67, 33))
+                line.setFill(gf.color_rgb(101, 67, 33)) #Muda a cor das linhas da pista para marrom
         else:
             for line in lines:
-                line.setFill('white')
-            shakeTimer = 0        
+                line.setFill('white') #Mantém a cor original das linhas da rodovia
+            shakeKaravanTimer = 0        
 
-        spawn_timer += 1
-        if spawn_timer >= trafficSpawnInterval:
-            spawn_timer = 0
-            traffic.genTraffic(trafficList,win)
+        trafficSpawnTimer += 1 
+        if trafficSpawnTimer >= trafficSpawnInterval: #Mais dificil => menor trafficSpawnInterval = mais carros 
+            trafficSpawnTimer = 0
+            traffic.genTraffic(trafficList,win) #Gera a posição de spawn do carro 
 
         #Função para mover o tráfego
         traffic.moveTraffic(trafficList,trafficSpeed) 
@@ -128,8 +131,8 @@ def game(karavanAcceleration, trafficSpawnInterval, trafficSpeed, difficulty):
          
         #Reseta o tráfego quando atingir o limite vertical da tela
         if traffic.resetTraffic(trafficList,trafficSpeed):
-            currentScore +=1 
-            if currentScore % 50 == 0: #A cada 40 pontos, troca a estrada
+            currentScore +=1 #Incrementa 1 na pontuação a cada carro que chega no limite da tela
+            if currentScore % 50 == 0: #A cada 50 pontos, troca a estrada
                 isDirtRoad = road.changeRoad(newRoad, win) 
                             
             score.updateScore(currentScore,scoreText)
@@ -138,16 +141,14 @@ def game(karavanAcceleration, trafficSpawnInterval, trafficSpeed, difficulty):
         #Verifica a colisão da Karavan com os carros da rodovia
         if karavan.karavanHasCrashed(trafficList,karavanHitBox):
             print('Karavan Crashed')
-            addNewScore = score.addNewScore(currentScore, difficulty)
-            menu.undrawAll(ft,scoreText,karavanSprite,karavanHitBox,newRpmBar,newRoad,dirtRoad,lines,trafficList,topScoreTxt,previousScores)
-            playAgain = menu.genEndGameButtons(win,currentScore)
+            addNewScore = score.addNewScore(currentScore, difficulty) #Grava o score no arquivo de leaderboard
+            menu.undrawAll(ft,scoreText,karavanSprite,karavanHitBox,newRpmBar,newRoad,dirtRoad,lines,trafficList,topScoreTxt,previousScores) #Limpa todos os elementos 
+            playAgain = menu.genEndGameButtons(win,currentScore) #Gera a opção de jogar novamente ou sair e exibe a pontuação
             if playAgain:
-                karavanAcceleration, trafficSpawnInterval, trafficSpeed, difficulty = menu.chooseGameDifficulty(win)
-                game(karavanAcceleration, trafficSpawnInterval, trafficSpeed, difficulty)
-            
-            #chooseGameDifficulty(win)
-            
-            gameOver = True
+                karavanAcceleration, trafficSpawnInterval, trafficSpeed, difficulty = menu.chooseGameDifficulty(win) #Exibe o menu de escolha de dificuldade
+                game(karavanAcceleration, trafficSpawnInterval, trafficSpeed, difficulty) #Inicia o jogo
+
+
 
 karavanAcceleration, trafficSpawnInterval, trafficSpeed, difficulty = menu.chooseGameDifficulty(win)
 
