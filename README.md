@@ -13,6 +13,12 @@ máximo possível desviando de obstáculos e acumulando pontos."**
 
 ------------------------------------------------------------------------
 
+<img width="878" height="864" alt="image" src="https://github.com/user-attachments/assets/fcd9c252-399a-4b20-97f2-35197a32138f" />
+
+<img width="895" height="900" alt="image" src="https://github.com/user-attachments/assets/21b5b847-4816-4c9c-a812-7bfba4cec832" />
+
+
+
 ## ⚙️ **Ultimas Atualizações**
 
 Features mais recentes:
